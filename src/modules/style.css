@@ -1,0 +1,24 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    outline: 1px solid white;
+}
+
+:root {
+    --darkreader-neutral-background: #131516;
+    --darkreader-neutral-text: #d8d4cf;
+    --darkreader-selection-background: #004daa;
+    --darkreader-selection-text: #e8e6e3;
+}
+
+body {
+    background-color: var(--darkreader-neutral-background);
+    color: var(--darkreader-neutral-text);
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
