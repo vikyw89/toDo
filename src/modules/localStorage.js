@@ -1,11 +1,11 @@
 class LocalStorage {
-    static storage = () => {
-        return JSON.parse(localStorage.getItem('toDos'))
+    static storage = (storageName) => {
+        return JSON.parse(localStorage.getItem(storageName))
     }
-    static setStorage = (arg) => {
+    static setStorage = (storageName, arg) => {
         arg
-            ? localStorage.setItem('toDos', JSON.stringify(arg))
-            : localStorage.removeItem('toDos')
+            ? localStorage.setItem(storageName, JSON.stringify(arg))
+            : localStorage.removeItem(storageName)
     }
 }
 
