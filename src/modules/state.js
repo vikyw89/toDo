@@ -2,6 +2,7 @@ import { Categories, ToDo } from "./helper"
 import { LocalStorage } from "./localStorage"
 
 class State {
+
     static createCategories = ({ name }) => {
         Categories.create({ name })
         LocalStorage.setStorage('Categories',Categories.list)

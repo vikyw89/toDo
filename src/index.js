@@ -18,5 +18,5 @@ if (!State.readToDo()) {
 }
 console.log(State.readCategories())
 console.log(State.readToDo())
-// // render DOM
-// // init()
+// render DOM
+init()

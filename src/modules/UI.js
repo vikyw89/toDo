@@ -22,18 +22,21 @@ const Header = () => {
 
 const Categories = () => {
     const node = document.createElement('div')
-    node.innerHTML = `<div class='Categories'>`
-    State.readCategories().map(item=>{
-        node.innerHTML += Category(item)
-    })
-    node.innerHTML += `</div>`
+    node.innerHTML = `
+    <div class='Categories'>
+        <div class='Menu'>Menu</div>
+        <div class='Title'>Title</div>
+        <div class='Notifications'>Notifications</div>
+        <div class='Filter'>Filter</div>
+    </div>`
     return node.innerHTML
 }
 
 const Category = (arg) => {
     const node = document.createElement('div')
-    node.innerHTML = `<div class='Category' data-id='${arg.UUID}'>'${item.name}'</div>`
+    node.innerHTML = `<div class='Category' data-uuid='${arg.UUID}'>'${arg.name}'</div>`
     node.addEventListener('pointerdown', ()=>{
+        
         console.log('clicked')
     })
     return node.innerHTML
@@ -43,22 +46,24 @@ const Footer = () => {
     const node = document.createElement('div')
     node.innerHTML = `
         <div class='Footer'>
-            <div class='NavCategories'></div>
-            <div class='NavToDoList'></div>
-            <div class='NavSetting'></div>
-            <div class='NavDashBoard'></div>
+            <span class="material-symbols-outlined nav-task">
+                task_alt
+            </span>
+            <span class="material-symbols-outlined nav-callendar">
+                calendar_month
+            </span>
+            <span class="material-symbols-outlined nav-settings">
+                settings
+            </span>
         </div>
     `
+    return node.innerHTML
 }
-
 
 const Main = () => {
     const node = document.createElement('div')
     node.innerHTML =` 
         <div class='Main'>
-            <div class='Categories'>Categories</div>
-            <div class='MainContent'>MainContent</div>
-            <div class='Navigations'>Navigations</div>
         </div>
     `
     return node.innerHTML
