@@ -24,10 +24,16 @@ const Categories = () => {
     const node = document.createElement('div')
     node.innerHTML = `
     <div class='Categories'>
-        <div class='Menu'>Menu</div>
+        <span class="material-symbols-outlined nav-menu">
+            menu
+        </span>
         <div class='Title'>Title</div>
-        <div class='Notifications'>Notifications</div>
-        <div class='Filter'>Filter</div>
+        <span class="material-symbols-outlined nav-notif">
+            circle_notifications
+        </span>
+        <span class="material-symbols-outlined nav-sort">
+            sort
+        </span>
     </div>`
     return node.innerHTML
 }

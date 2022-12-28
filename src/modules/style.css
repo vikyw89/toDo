@@ -27,14 +27,36 @@ body {
 }
 
 .Categories {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: 2fr 4fr 1fr 1fr;
+    background-color: var(--darkreader-neutral-background);
+    z-index: 3;
 }
+
+.Categories > * {
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
+
+.Categories > *:active {
+    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+}
+
+.nav-sort, .nav-notif {
+    text-align: end;
+}
+
 
 .Category {
     border-radius: 10px;
     border: 1px solid white;
     padding: 2px;
+}
+
+.Title {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 1.3rem;
 }
 
 .Footer {
