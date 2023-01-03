@@ -33,8 +33,8 @@ class State {
         return ToDo.list
     }
 
-    static updateToDo = ({ UUID, categoriesUUID, title, description, dueDate, priority }) => {
-        ToDo.update({ UUID, categoriesUUID, title, description, dueDate, priority })
+    static updateToDo = ({ UUID, categoriesUUID, title, description, dueDate, priority , status}) => {
+        ToDo.update({ UUID, categoriesUUID, title, description, dueDate, priority , status})
         LocalStorage.setStorage('ToDo', ToDo.list)
     }
 

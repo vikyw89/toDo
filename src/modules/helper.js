@@ -12,7 +12,7 @@ class ToDo {
         return ToDo.list
     }
 
-    static update = ({ UUID, categoriesUUID, title, description, dueDate, priority }) => {
+    static update = ({ UUID, categoriesUUID, title, description, dueDate, priority , status}) => {
         const updatedToDo = ToDo.list.reduce((result, item)=>{
             if (item.UUID === UUID) {
                 item.title = title ?? item.title
@@ -20,6 +20,7 @@ class ToDo {
                 item.description = description ?? item.description
                 item.dueDate = dueDate ?? item.dueDate
                 item.priority = priority ?? item.priority
+                item.status = status ?? item.status
             }
             return result.concat(item)
         },[])
@@ -39,8 +40,9 @@ class ToDo {
         this.title = title
         this.description = description ?? ''
         this.priority = priority ?? 'Normal'
-        this.createdDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDay()}`
-        this.dueDate = dueDate ?? this.createdDate
+        this.createdDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}`
+        this.dueDate = dueDate ?? null
+        this.status = 'queue'
     }
 }
 
