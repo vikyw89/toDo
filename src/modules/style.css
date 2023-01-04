@@ -17,6 +17,7 @@
 body {
     background-color: var(--darkreader-neutral-background2);
     color: var(--darkreader-neutral-text);
+    font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 #content {
@@ -107,4 +108,58 @@ body {
     font-weight: bolder;
     color: var(--darkreader-selection-background2);
     box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+}
+
+.AddTaskButton {
+    position: absolute;
+    bottom: 80px;
+    right: 30px;
+    font-size: 3rem;
+    scale: 3;
+}
+
+.AddTask {
+    background-color: var(--darkreader-neutral-background);
+}
+
+.AddTaskInput {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin: 10px;
+    background-color: var(--darkreader-neutral-background);
+    gap:10px;
+}
+
+.AddTaskInput > input {
+    background-color: var(--darkreader-neutral-background);
+    color: var(--darkreader-neutral-text);
+    flex: 1;
+    font-size: 1.2rem;
+    border: none;
+    outline: none;
+}
+
+.AddTaskInput > span:last-child {
+    color: var(--darkreader-selection-background2);
+    font-weight: bolder;
+}
+
+.AutoSuggestions {
+    display: grid;
+    padding: 10px;
+    gap:20px;
+    background-color: var(--darkreader-neutral-background);
+    min-height: 100vh;
+    align-content: flex-start;
+}
+
+.TaskSuggestionItem {
+    display: flex;
+    gap: 10px;
+}
+
+.TaskSuggestionItem > span:first-child {
+    color: var(--darkreader-selection-background2);
+    font-weight: bolder;
 }
