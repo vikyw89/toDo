@@ -255,7 +255,7 @@ class UI {
                 State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value ,dueDate:UI.taskDueDate })
                 console.log(State.readToDo())
                 UI.nav = 'task'
-                UI.taskDueDate = ''
+                UI.taskDueDate = null
                 UI.render()
             })
         },100)
