@@ -235,12 +235,13 @@ class UI {
 
     static AddTask = () => {
         setTimeout(()=>{
+            const input = document.querySelector('.AddTaskInput > input')
+            input.focus()
             document.querySelector('.AddTaskInput > input').addEventListener('input', (e)=>{
                 document.querySelector('.AutoSuggestions').outerHTML = this.AutoSuggestions(e.target.value)
                 document.querySelectorAll('.TaskSuggestionItem').forEach(item=>{
                     item.addEventListener('click', (e)=>{
                         const autoComplete = e.currentTarget.querySelector('span:last-child').textContent
-                        const input = document.querySelector('.AddTaskInput > input')
                         input.value = autoComplete + ' '
                         input.focus()
                     })
