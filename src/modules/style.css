@@ -12,11 +12,14 @@
     --darkreader-selection-background: #004daa;
     --darkreader-selection-background2: #255998;
     --darkreader-selection-text: #e8e6e3;
+    --darkreader-done-task:#d8d4cf80;
 }
 
 body {
     background-color: var(--darkreader-neutral-background2);
     color: var(--darkreader-neutral-text);
+    font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: relative;
 }
 
 #content {
@@ -25,6 +28,16 @@ body {
     min-height: 100vh;
     z-index: 0;
     user-select: none;
+}
+
+.overlay {
+    position: absolute;
+    top:0px;
+    left: 0px;
+    z-index:10;
+    width: 100%;
+    min-height: 100%;
+    background-color: #131516;
 }
 
 .Header {
@@ -64,6 +77,7 @@ body {
 
 .done-task {
     text-decoration:line-through;
+    color: var(--darkreader-done-task);
 }
 
 .task-list-today,
@@ -107,4 +121,58 @@ body {
     font-weight: bolder;
     color: var(--darkreader-selection-background2);
     box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+}
+
+.AddTaskButton {
+    position: absolute;
+    bottom: 80px;
+    right: 30px;
+    font-size: 3rem;
+    scale: 3;
+}
+
+.AddTask {
+    background-color: var(--darkreader-neutral-background);
+}
+
+.AddTaskInput {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin: 10px;
+    background-color: var(--darkreader-neutral-background);
+    gap:10px;
+}
+
+.AddTaskInput > input {
+    background-color: var(--darkreader-neutral-background);
+    color: var(--darkreader-neutral-text);
+    flex: 1;
+    font-size: 1.2rem;
+    border: none;
+    outline: none;
+}
+
+.AddTaskInput > span:last-child {
+    color: var(--darkreader-selection-background2);
+    font-weight: bolder;
+}
+
+.AutoSuggestions {
+    display: grid;
+    padding: 10px;
+    gap:20px;
+    background-color: var(--darkreader-neutral-background);
+    min-height: 100vh;
+    align-content: flex-start;
+}
+
+.AutoSuggestionItem {
+    display: flex;
+    gap: 10px;
+}
+
+.AutoSuggestionItem > span:first-child {
+    color: var(--darkreader-selection-background2);
+    font-weight: bolder;
 }

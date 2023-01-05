@@ -1,3 +1,4 @@
+import { formatISO } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 class ToDo {
@@ -40,8 +41,8 @@ class ToDo {
         this.title = title
         this.description = description ?? ''
         this.priority = priority ?? 'Normal'
-        this.createdDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}`
-        this.dueDate = dueDate ?? null
+        this.createdDate = formatISO(new Date(), { representation: 'date' })
+        this.dueDate = dueDate ?? formatISO(new Date(), { representation: 'date' })
         this.status = 'queue'
     }
 }
@@ -84,4 +85,104 @@ class Categories {
     }
 }
 
-export { ToDo, Categories }
+class TaskSuggestions {
+    static taskList = {
+        Call:`
+        <span class="material-symbols-outlined">
+            call
+        </span>`,
+        Check:`
+        <span class="material-symbols-outlined">
+            search_check
+        </span>
+        `,
+        Get:`
+        <span class="material-symbols-outlined">
+            approval_delegation
+        </span>
+        `,
+        Email:`
+        <span class="material-symbols-outlined">
+            mail
+        </span>
+        `,
+        Buy:`
+        <span class="material-symbols-outlined">
+            shopping_cart
+        </span>
+        `,
+        'Meet / Schedule':`
+        <span class="material-symbols-outlined">
+            schedule
+        </span>
+        `,
+        Clean:`
+        <span class="material-symbols-outlined">
+            cleaning_services
+        </span>
+        `,
+        Take:`
+        <span class="material-symbols-outlined">
+            takeout_dining
+        </span>
+        `,
+        Send:`
+        <span class="material-symbols-outlined">
+            send
+        </span>
+        `,
+        Pay:`
+        <span class="material-symbols-outlined">
+            payments
+        </span>
+        `,
+        Make:`
+        <span class="material-symbols-outlined">
+            draw
+        </span>
+        `,
+        Pick:`
+        <span class="material-symbols-outlined">
+            hail
+        </span>
+        `,
+        Do:`
+        <span class="material-symbols-outlined">
+            assignment
+        </span>
+        `,
+        Read:`
+        <span class="material-symbols-outlined">
+            menu_book
+        </span>
+        `,
+        Print:`
+        <span class="material-symbols-outlined">
+            print
+        </span>
+        `,
+        Finish:`
+        <span class="material-symbols-outlined">
+            golf_course
+        </span>
+        `,
+        Study:`
+        <span class="material-symbols-outlined">
+            visibility
+        </span>
+        `
+    }
+    static inputCheck = (arg) => {
+        if (arg) {
+            return Object.fromEntries(Object.entries(TaskSuggestions.taskList).filter(([key, value])=>{
+                if (key.toLowerCase().match(new RegExp(String.raw`${arg.toLowerCase()}`),'g')){
+                    return true
+                }
+            }))
+        } else {
+            return TaskSuggestions.taskList
+        }
+    }
+}
+
+export { ToDo, Categories, TaskSuggestions }
