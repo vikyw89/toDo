@@ -1,4 +1,4 @@
-import { formatISO } from "date-fns"
+import { formatISO, add } from "date-fns"
 import { TaskSuggestions } from "./helper"
 import { State } from "./state"
 
@@ -9,7 +9,7 @@ class UI {
     static render = () => {
         const content = document.querySelector('#content')
         switch (true){
-            case UI.nav === 'task':
+            default:
                 content.innerHTML = `
                     ${this.Header()}
                     ${this.Main()}
@@ -21,14 +21,12 @@ class UI {
                     ${this.AddTask()}
                     ${this.AutoSuggestions()}
                 `
-                console.log()
                 break
         }
         document.querySelector(`.nav-${UI.nav}`).classList.add('active')
     }
 
     static EditTask = ({ UUID, categoriesUUID, title, description, dueDate, priority , status }) => {
-
         return `
         <div class="EditTask">
             <div class="EditTaskHeader">
@@ -154,9 +152,10 @@ class UI {
                 })
             })
         },100)
+        const date = new Date()
+        const today = formatISO(date, { representation: 'date' })
+        const tomorrow = formatISO(add(date, {days:1}), { representation: 'date'})
 
-        const today = formatISO(new Date(), { representation: 'date' })
-        const tomorrow = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().setDate(new Date().getDate()+1)}`
         const todayToDoList = State.readToDo().filter(element=>{
             return (element.dueDate === today && element.status !== 'end')
         })
