@@ -1,7 +1,7 @@
 # toDo
 Project for The Odin Project 2022
 
-live preview : WIP
+live preview : https://vikyw89.github.io/toDo/
 
 <section id="assignment">
   <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
