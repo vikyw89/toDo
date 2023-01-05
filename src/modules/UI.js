@@ -86,11 +86,11 @@ class UI {
                 UI.nav = 'task'
                 UI.render()
             })
-            document.querySelector('.nav-task').addEventListener('click', ()=>{
+            document.querySelector('.nav-calendar').addEventListener('click', ()=>{
                 UI.nav = 'calendar'
                 UI.render()
             })
-            document.querySelector('.nav-task').addEventListener('click', ()=>{
+            document.querySelector('.nav-settings').addEventListener('click', ()=>{
                 UI.nav = 'settings'
                 UI.render()
             })
