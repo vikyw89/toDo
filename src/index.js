@@ -7,7 +7,7 @@ import { TaskSuggestions } from './modules/helper';
 // sync model to DB
 State.readCategories()
 State.readToDo()
-// LocalStorage.setStorage('ToDo',)
+LocalStorage.setStorage('ToDo',)
 // populate model if empty
 if (!State.readCategories()) {
     State.createCategories({ name:'personal' })

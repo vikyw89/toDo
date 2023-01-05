@@ -1,3 +1,4 @@
+import { formatISO } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 class ToDo {
@@ -40,8 +41,8 @@ class ToDo {
         this.title = title
         this.description = description ?? ''
         this.priority = priority ?? 'Normal'
-        this.createdDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}`
-        this.dueDate = dueDate ?? `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}`
+        this.createdDate = formatISO(new Date(), { representation: 'date' })
+        this.dueDate = dueDate ?? formatISO(new Date(), { representation: 'date' })
         this.status = 'queue'
     }
 }

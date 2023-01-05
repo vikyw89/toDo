@@ -1,12 +1,16 @@
+import { formatISO } from "date-fns"
 import { TaskSuggestions } from "./helper"
 import { LocalStorage } from "./localStorage"
 import { State } from "./state"
 
 class UI {
     static activePages = 'task'
+    static taskDueDate = null
+    static html = ''
+    static script = []
 
     static render = () => {
-        const content = document.querySelector('#content')
+        const content = document.querySelector('#content') 
         switch (true) {
             case UI.activePages === 'task':
                 content.innerHTML = `
@@ -15,15 +19,11 @@ class UI {
                 ${this.Footer()}
                 `
                 // bind events
-                document.querySelector('.Footer').addEventListener('pointerdown', (e)=>{
-                    document.querySelectorAll('.Footer > *').forEach(element=>{
-                        console.log(element.classList)
-                        element.classList.remove('active')
-                    })
-                    e.target.classList.add('active')
-                })
+                if (UI.activePages === 'task') {
+                    document.querySelector('.nav-task').classList.add('active')
+                }
                 document.querySelectorAll('.task-checkmark').forEach(element=>{
-                    element.addEventListener('pointerdown', (e)=>{
+                    element.addEventListener('click', (e)=>{
                         const node = document.querySelector(`[data-uuid='${e.target.dataset.uuid}'] ~ div`)
                         if (node.classList.contains('done-task')){
                             State.updateToDo({ UUID:e.target.dataset.uuid, status:'queue' })
@@ -33,20 +33,47 @@ class UI {
                         UI.render()
                     })
                 })
-                document.querySelectorAll('.TaskCard').forEach(item=>{
-                    item.addEventListener('pointerdown', (e)=>{
-                        console.log(e.currentTarget.querySelector('input').dataset.uuid)
+                document.querySelectorAll('.card-title').forEach(item=>{
+                    item.addEventListener('click', (e)=>{
+                        const toDoUuid = e.currentTarget.dataset.uuid
+                        const toDo = State.readToDo().filter(item=>{
+                            return item.UUID === toDoUuid
+                        })
+                        console.log(toDo[0])
+                        document.querySelector('.Main').innerHTML =`
+                            ${this.EditTask(toDo[0])}
+                        `
+                    })
+                    // event listener for edit task
+                })
+                document.querySelector('.AddTaskButton').addEventListener('click', ()=>{
+                    UI.activePages = 'addTask'
+                    UI.render()
+                })
+                document.querySelectorAll('.add-task').forEach(item=>{
+                    item.addEventListener('click', (e)=>{
+                        console.log(e.target.dataset.key)
+                        UI.activePages = 'addTask'
+                        switch (true){
+                            case e.target.dataset.key === 'today':
+                                UI.taskDueDate = null
+                                break
+                            case e.target.dataset.key === 'tomorrow':
+                                UI.taskDueDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().setDate(new Date().getDate()+1)}`
+                                break
+                        }
+                        UI.render()
                     })
                 })
-                document.querySelector('.AddTaskButton').addEventListener('pointerdown', ()=>{
-                    UI.activePages = 'addTask'
+                document.querySelector('.nav-task').addEventListener('click', ()=>{
+                    UI.activePages = 'task'
                     UI.render()
                 })
                 break
             case UI.activePages === 'addTask':
                 content.innerHTML = `
-                ${this.AddTask()}
-                ${this.AutoSuggestions()}
+                    ${this.AddTask()}
+                    ${this.AutoSuggestions()}
                 `
                 document.querySelectorAll('.TaskSuggestionItem').forEach(item=>{
                     item.addEventListener('click', (e)=>{
@@ -69,24 +96,64 @@ class UI {
                     })
                 })
 
-                document.querySelector('.AddTaskInput > span:first-child').addEventListener('pointerdown', ()=>{
+                document.querySelector('.AddTaskInput > span:first-child').addEventListener('click', ()=>{
                     UI.activePages = 'task'
                     UI.render()
                 })
 
-                document.querySelector('.AddTaskInput > span:last-child').addEventListener('pointerdown', ()=>{
+                document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
+                    console.log('task added')
                     const input = document.querySelector('.AddTaskInput > input')
-                    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value })
+                    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value ,dueDate:UI.taskDueDate })
                     console.log(State.readToDo())
                     UI.activePages = 'task'
+                    UI.taskDueDate = ''
                     UI.render()
                 })
                 break
-
         }
-
     }
 
+    static EditTask = ({ UUID, categoriesUUID, title, description, dueDate, priority , status }) => {
+        console.log(UUID)
+        const node = document.createElement('div')
+        node.innerHTML =`
+            <div class="EditTask">
+                <div class="EditTaskHeader">
+                    <span>TASK DETAILS</span>
+                    <span>Save</span>
+                </div>
+                <div>
+                    TITLE
+                    ${title}
+                </div>
+                <div>
+                    DESCRIPTION
+                    ${description}
+                </div>
+                <div>
+                    DUE DATE
+                    ${dueDate}
+                </div>
+                <div>
+                    CATEGORY
+                    ${State.readCategories().filter(item=>{
+                        return item.UUID === categoriesUUID
+                    })[0].name}
+                </div>
+                <div>
+                    PRIORITY
+                    ${priority}
+                </div>
+                <div>
+                    STATUS
+                    ${status}
+                </div>
+            </div>
+        `
+        return node.innerHTML
+    }
+    
     static Header = () => {
         const node = document.createElement('div')
         node.innerHTML = `
@@ -135,7 +202,6 @@ class UI {
     }
 
     static AddTaskButton = () => {
-        console.log('addtaskbutton')
         const node = document.createElement('div')
         node.innerHTML = `
             <div class='AddTaskButton'>
@@ -159,7 +225,7 @@ class UI {
 
     static Task = () => {
         const node = document.createElement('div')
-        const today = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}`
+        const today = formatISO(new Date(), { representation: 'date' })
         const tomorrow = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().setDate(new Date().getDate()+1)}`
         const todayToDoList = State.readToDo().filter(element=>{
             return (element.dueDate === today && element.status !== 'end')
@@ -186,6 +252,7 @@ class UI {
                 </div>
                 <div class='task-list-today'>
                     ${todayToDoList.map(element=>{
+                        console.log(element)
                         return this.TaskCard({title:element.title, UUID:element.UUID})
                     }).join('')}
                 </div>
@@ -283,7 +350,7 @@ class UI {
         node.innerHTML =`
             <div class='TaskCard'>
                 <input type='checkbox' class='task-checkmark' ${checked} data-UUID='${UUID}'></input>
-                <div class='card-title ${done}'>${title}</div>
+                <div class='card-title ${done}' data-UUID='${UUID}'>${title}</div>
             </div>
         `
         return node.innerHTML
