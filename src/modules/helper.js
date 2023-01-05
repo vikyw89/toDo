@@ -42,7 +42,7 @@ class ToDo {
         this.description = description ?? ''
         this.priority = priority ?? 'Normal'
         this.createdDate = formatISO(new Date(), { representation: 'date' })
-        this.dueDate = dueDate ?? formatISO(new Date(), { representation: 'date' })
+        this.dueDate = dueDate
         this.status = 'queue'
     }
 }

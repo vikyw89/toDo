@@ -23,6 +23,7 @@ class UI {
                 `
                 break
         }
+        console.log(document.querySelector(`.nav-${UI.nav}`))
         document.querySelector(`.nav-${UI.nav}`).classList.add('active')
     }
 
@@ -64,6 +65,20 @@ class UI {
     }
     
     static Header = () => {
+        setTimeout(()=>{
+            document.querySelector('.nav-apps').addEventListener('click',()=>{
+                UI.nav = 'apps'
+                UI.render()
+            })
+            document.querySelector('.nav-notif').addEventListener('click',()=>{
+                UI.nav = 'notif'
+                UI.render()
+            })
+            document.querySelector('.nav-sort').addEventListener('click',()=>{
+                UI.nav = 'sort'
+                UI.render()
+            })
+        },100)
         return `
         <div class='Header'>
             <span class="material-symbols-outlined nav-apps">
@@ -121,13 +136,16 @@ class UI {
     static AddTaskButton = () => {
         setTimeout(()=>{
             document.querySelector('.AddTaskButton').addEventListener('click', ()=>{
-                UI.nav = 'addTask'
-                UI.render()
+                const content = document.querySelector('#content')
+                content.innerHTML =`
+                    ${this.AddTask()}
+                    ${this.AutoSuggestions()}
+                `
             })
         },100)
         return `
         <div class='AddTaskButton'>
-            <span class="material-symbols-outlined">
+            <span class="material-symbols-outlined nav-addTask">
                 add_circle
             </span>
         </div>
@@ -146,16 +164,30 @@ class UI {
         setTimeout(()=>{
             document.querySelectorAll('.add-task').forEach(item=>{
                 item.addEventListener('click', (e)=>{
-                    console.log(e.target.dataset.key)
-                    UI.activePages = 'addTask'
+                    const date = new Date()
+                    let dueDate
                     switch (true){
                         case e.target.dataset.key === 'today':
-                            UI.taskDueDate = null
+                            dueDate = formatISO(date, { representation: 'date' })
                             break
                         case e.target.dataset.key === 'tomorrow':
-                            UI.taskDueDate = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().setDate(new Date().getDate()+1)}`
+                            dueDate = formatISO(add(date, { days:1 }), { representation: 'date' })
+                            break
+                        case e.target.dataset.key === 'upcoming':
+                            dueDate = formatISO(add(date, { weeks:1 }), { representation: 'date' })
+                            break
+                        case e.target.dataset.key === 'someday':
+                            dueDate = null
                             break
                     }
+                    const content = document.querySelector('#content')
+                    content.innerHTML =`
+                        ${this.AddTask({ dueDate })}
+                        ${this.AutoSuggestions()}
+                    `
+                    console.log(e.target.dataset.key)
+                    UI.activePages = 'addTask'
+     
                     UI.render()
                 })
             })
@@ -227,9 +259,6 @@ class UI {
             </div>
             <div class='task-category'>
             <div class='archives'>Archives</div>
-            <span class="material-symbols-outlined add-task" data-key='archives'>
-                add
-            </span>
             </div>
             <div class='task-list-archives'>
                 ${archives.map(element=>{
@@ -241,7 +270,7 @@ class UI {
         `
     }
 
-    static AddTask = () => {
+    static AddTask = ({ dueDate }) => {
         setTimeout(()=>{
             const input = document.querySelector('.AddTaskInput > input')
             input.focus()
@@ -261,10 +290,9 @@ class UI {
             })
             document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
                 const input = document.querySelector('.AddTaskInput > input')
-                State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value ,dueDate:UI.taskDueDate })
+                State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value ,dueDate })
                 console.log(State.readToDo())
                 UI.nav = 'task'
-                UI.taskDueDate = null
                 UI.render()
             })
         },100)
