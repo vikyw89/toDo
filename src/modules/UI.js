@@ -4,7 +4,6 @@ import { State } from "./state"
 
 class UI {
     static nav = 'task'
-    static taskDueDate = null
 
     static render = () => {
         const content = document.querySelector('#content')
@@ -16,14 +15,7 @@ class UI {
                     ${this.Footer()}
                 `
                 break
-            case UI.nav === 'addTask':
-                content.innerHTML =`
-                    ${this.AddTask()}
-                    ${this.AutoSuggestions()}
-                `
-                break
         }
-        console.log(document.querySelector(`.nav-${UI.nav}`))
         document.querySelector(`.nav-${UI.nav}`).classList.add('active')
     }
 
@@ -137,8 +129,9 @@ class UI {
         setTimeout(()=>{
             document.querySelector('.AddTaskButton').addEventListener('click', ()=>{
                 const content = document.querySelector('#content')
+                const dueDate = null
                 content.innerHTML =`
-                    ${this.AddTask()}
+                    ${this.AddTask({ dueDate })}
                     ${this.AutoSuggestions()}
                 `
             })
@@ -185,10 +178,6 @@ class UI {
                         ${this.AddTask({ dueDate })}
                         ${this.AutoSuggestions()}
                     `
-                    console.log(e.target.dataset.key)
-                    UI.activePages = 'addTask'
-     
-                    UI.render()
                 })
             })
         },100)
@@ -273,7 +262,6 @@ class UI {
     static AddTask = ({ dueDate }) => {
         setTimeout(()=>{
             const input = document.querySelector('.AddTaskInput > input')
-            input.focus()
             document.querySelector('.AddTaskInput > input').addEventListener('input', (e)=>{
                 document.querySelector('.AutoSuggestions').outerHTML = this.AutoSuggestions(e.target.value)
                 document.querySelectorAll('.TaskSuggestionItem').forEach(item=>{
