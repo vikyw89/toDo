@@ -167,12 +167,12 @@ body {
     align-content: flex-start;
 }
 
-.TaskSuggestionItem {
+.AutoSuggestionItem {
     display: flex;
     gap: 10px;
 }
 
-.TaskSuggestionItem > span:first-child {
+.AutoSuggestionItem > span:first-child {
     color: var(--darkreader-selection-background2);
     font-weight: bolder;
 }
