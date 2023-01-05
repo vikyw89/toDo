@@ -86,13 +86,21 @@ class UI {
                 UI.nav = 'task'
                 UI.render()
             })
+            document.querySelector('.nav-task').addEventListener('click', ()=>{
+                UI.nav = 'calendar'
+                UI.render()
+            })
+            document.querySelector('.nav-task').addEventListener('click', ()=>{
+                UI.nav = 'settings'
+                UI.render()
+            })
         },100)
         return `
         <div class='Footer'>
             <span class="material-symbols-outlined nav-task">
                 task_alt
             </span>
-            <span class="material-symbols-outlined nav-callendar">
+            <span class="material-symbols-outlined nav-calendar">
                 calendar_month
             </span>
             <span class="material-symbols-outlined nav-settings">
