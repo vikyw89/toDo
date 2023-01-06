@@ -177,3 +177,18 @@ body {
     color: var(--darkreader-selection-background2);
     font-weight: bolder;
 }
+
+[draggable="true"] {
+}
+
+.drop-container {
+}
+
+.drop-container:has(.dragover) {
+    border: 2px dashed white;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+

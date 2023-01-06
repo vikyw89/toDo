@@ -2,10 +2,12 @@ import { formatISO, add } from "date-fns"
 import { TaskSuggestions } from "./helper"
 import { State } from "./state"
 
+
 class UI {
     static nav = 'task'
-
+    static dragged
     static render = () => {
+
         const content = document.querySelector('#content')
         switch (true){
             default:
@@ -16,6 +18,7 @@ class UI {
                 `
                 break
         }
+
         document.querySelector(`.nav-${UI.nav}`).classList.add('active')
     }
 
@@ -71,12 +74,13 @@ class UI {
                 UI.render()
             })
         },100)
+
         return `
         <div class='Header'>
             <span class="material-symbols-outlined nav-apps">
                 apps
             </span>
-            <div class='Title'>Title</div>
+            <div id="title" class='Title'>Title</div>
             <span class="material-symbols-outlined nav-notif">
                 circle_notifications
             </span>
@@ -180,6 +184,38 @@ class UI {
                     `
                 })
             })
+
+            /* events fired on the drop targets */
+            document.querySelectorAll(".drop-container").forEach(target=>{
+                target.addEventListener("dragover", (event) => {
+                    // prevent default to allow drop
+                    event.preventDefault();
+                }, false);
+                  
+                target.addEventListener("dragenter", (event) => {
+                    // highlight potential drop target when the draggable element enters it
+                    // if (event.target.closest(".drop-container").classList.contains("drop-container")) {
+                        event.target.classList.add("dragover");
+                    // }
+                });
+                
+                target.addEventListener("dragleave", (event) => {
+                    // reset background of potential drop target when the draggable element leaves it
+                    // if (event.target.closest(".drop-container").classList.contains("drop-container")) {
+                        event.target.classList.remove("dragover");
+                    // }
+                });
+                
+                target.addEventListener("drop", (event) => {
+                    // prevent default action (open as link for some elements)
+                    event.preventDefault();
+                    // move dragged element to the selected drop target
+                    if (event.target.closest(".drop-container").classList.contains("drop-container")) {
+                        event.target.classList.remove("dragover");
+                        event.target.closest(`.drop-container`).appendChild(this.dragged)
+                    }
+                });
+            });
         },100)
         const date = new Date()
         const today = formatISO(date, { representation: 'date' })
@@ -202,54 +238,54 @@ class UI {
         })
         return `
         <div class='Task'>
-            <div class='task-category'>
-                <div class='today'>Today</div>
-                <span class="material-symbols-outlined add-task" data-key='today'>
-                    add
-                </span>
-            </div>
-            <div class='task-list-today'>
+            <div class='task-list-today drop-container'>
+                <div class='task-category'>
+                    <div class='today'>Today</div>
+                    <span class="material-symbols-outlined add-task" data-key='today'>
+                        add
+                    </span>
+                </div>
                 ${todayToDoList.map(element=>{
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-category'>
-                <div class='tomorrow'>Tomorrow</div>
-                <span class="material-symbols-outlined add-task" data-key='tomorrow'>
-                    add
-                </span>
-            </div>
-            <div class='task-list-tomorrow'>
+            <div class='task-list-tomorrow drop-container'>
+                <div class='task-category'>
+                    <div class='tomorrow'>Tomorrow</div>
+                    <span class="material-symbols-outlined add-task" data-key='tomorrow'>
+                        add
+                    </span>
+                </div>
                 ${tomorrowToDoList.map(element=>{
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-category'>
-                <div class='upcoming'>Upcoming</div>
-                <span class="material-symbols-outlined add-task" data-key='upcoming'>
-                    add
-                </span>
-            </div>
-            <div class='task-list-upcoming'>
+            <div class='task-list-upcoming drop-container'>
+                <div class='task-category'>
+                    <div class='upcoming'>Upcoming</div>
+                    <span class="material-symbols-outlined add-task" data-key='upcoming'>
+                        add
+                    </span>
+                </div>
                 ${upcomingToDoList.map(element=>{
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-category'>
-                <div class='someday'>Someday</div>
-                <span class="material-symbols-outlined add-task" data-key='someday'>
-                    add
-            </span>
-            </div>
-            <div class='task-list-someday'>
+            <div class='task-list-someday drop-container'>
+                <div class='task-category'>
+                    <div class='someday'>Someday</div>
+                    <span class="material-symbols-outlined add-task" data-key='someday'>
+                        add
+                    </span>
+                </div>
                 ${somedayToDoList.map(element=>{
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-category'>
-            <div class='archives'>Archives</div>
-            </div>
-            <div class='task-list-archives'>
+            <div class='task-list-archives drop-container'>
+                <div class='task-category'>
+                <div class='archives'>Archives</div>
+                </div>
                 ${archives.map(element=>{
                     return this.TaskCard({title:element.title, UUID:element.UUID, status:element.status})
                 }).join('')}
@@ -283,6 +319,7 @@ class UI {
                 UI.nav = 'task'
                 UI.render()
             })
+
         },100)
         return `
             <div class='AddTask'>
@@ -354,12 +391,29 @@ class UI {
                 UI.render()
             })
 
+            /* events fired on the draggable target */
+            const source = document.querySelector(`.TaskCard[data-uuid="${UUID}"]`)
+            source.addEventListener("drag", (event) => {
+            });
+            
+            source.addEventListener("dragstart", (event) => {
+                // store a ref. on the dragged elem
+                this.dragged = event.target
+                // make it half transparent
+                event.target.classList.add("dragging");
+            });
+            
+            source.addEventListener("dragend", (event) => {
+                // reset the transparency
+                event.target.classList.remove("dragging");
+            });
+            
         },100)
         const node = document.createElement('div')
         const done = status === 'end' ? 'done-task' : null
         const checked = !done ? null : 'checked'
         return `
-        <div class='TaskCard'>
+        <div class='TaskCard' data-UUID='${UUID}'  draggable="true">
             <input type='checkbox' class='task-checkmark' ${checked} data-UUID='${UUID}'></input>
             <div class='card-title ${done}' data-UUID='${UUID}'>${title}</div>
         </div>
