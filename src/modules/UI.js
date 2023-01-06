@@ -126,6 +126,7 @@ class UI {
         <div class='Main'>
             ${this.Task()}
         </div>
+        <div class="clear"></div>
         `
     }
 
