@@ -2,7 +2,6 @@ import { formatISO, add } from "date-fns"
 import { TaskSuggestions } from "./helper"
 import { State } from "./state"
 
-
 class UI {
     static nav = 'task'
     static dragged
@@ -194,6 +193,7 @@ class UI {
                 }, false);
                   
                 target.addEventListener("dragenter", (event) => {
+                    event.preventDefault();
                     // highlight potential drop target when the draggable element enters it
                     // if (event.target.closest(".drop-container").classList.contains("drop-container")) {
                         event.target.classList.add("dragover");

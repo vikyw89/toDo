@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "date-fns": "^2.29.3",
+    "mobile-drag-drop": "^3.0.0-rc.0",
     "uuid": "^9.0.0"
   }
 }
