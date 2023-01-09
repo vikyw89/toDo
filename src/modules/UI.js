@@ -5,8 +5,8 @@ import { State } from "./state"
 class UI {
     static nav = 'task'
     static dragged
+    static activeCategory = 'All Task'
     static render = () => {
-
         const content = document.querySelector('#content')
         switch (true){
             default:
@@ -16,9 +16,44 @@ class UI {
                     ${this.Footer()}
                 `
                 break
+            case UI.nav === 'categories':
+                content.innerHTML = `
+                    ${this.SearchTask()}
+                    ${this.Categories()}
+                `
+                break
         }
+        content.innerHTML += `
+        <style>
+            #content {
+                display: flex;
+                flex-direction: column;
+                z-index: 0;
+            }
 
+            .active {
+                font-weight: bolder;
+                color: var(--darkreader-selection-background2);
+                box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+            }
+        </style>
+        `
         document.querySelector(`.nav-${UI.nav}`).classList.add('active')
+    }
+
+    static Categories = () => {
+        return `
+        `
+    }
+    static SearchTask = () => {
+        return `
+        <div class="SearchTask pizza">
+            <span class="material-symbols-outlined">
+                search
+            </span>
+            <input placeholder="Search for tasks, events, etc..."></input>
+        </div>
+        `
     }
 
     static EditTask = ({ UUID, categoriesUUID, title, description, dueDate, priority , status }) => {
@@ -60,8 +95,8 @@ class UI {
     
     static Header = () => {
         setTimeout(()=>{
-            document.querySelector('.nav-apps').addEventListener('click',()=>{
-                UI.nav = 'apps'
+            document.querySelector('.nav-categories').addEventListener('click',()=>{
+                UI.nav = 'categories'
                 UI.render()
             })
             document.querySelector('.nav-notif').addEventListener('click',()=>{
@@ -72,14 +107,14 @@ class UI {
                 UI.nav = 'sort'
                 UI.render()
             })
-        },100)
+        },0)
 
         return `
         <div class='Header'>
-            <span class="material-symbols-outlined nav-apps">
+            <span class="material-symbols-outlined nav-categories">
                 apps
             </span>
-            <div id="title" class='Title'>Title</div>
+            <div class='activeCategory'>${UI.activeCategory}</div>
             <span class="material-symbols-outlined nav-notif">
                 circle_notifications
             </span>
@@ -87,6 +122,30 @@ class UI {
                 sort
             </span>
         </div>
+        <style>
+            .Header {
+                display: grid;
+                grid-template-columns: 2fr 4fr 1fr 1fr;
+                background-color: var(--darkreader-neutral-background);
+                z-index: 3;
+            }
+            
+            .Header > * {
+                padding: 15px;
+                padding-top: 20px;
+                box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+            }
+
+            .nav-sort, .nav-notif {
+                text-align: end;
+            }
+
+            .activeCategory {
+                text-align: center;
+                font-weight: bolder;
+                font-size: 1.3rem;
+            }
+        </style>
         `
     }
 
@@ -104,7 +163,7 @@ class UI {
                 UI.nav = 'settings'
                 UI.render()
             })
-        },100)
+        },0)
         return `
         <div class='Footer'>
             <span class="material-symbols-outlined nav-task">
@@ -117,6 +176,26 @@ class UI {
                 settings
             </span>
         </div>
+        <style>
+            .Footer {
+                position: fixed;
+                bottom: 0;
+                left: 0px;
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                text-align: center;
+                background-color: var(--darkreader-neutral-background);
+                z-index: 10;
+            }
+            
+            .Footer > * {
+                padding: 10px;
+                padding-bottom: 20px;
+                box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+                z-index: 5;
+            }
+        </style>
         `
     }
 
@@ -139,13 +218,23 @@ class UI {
                     ${this.AutoSuggestions()}
                 `
             })
-        },100)
+        },0)
         return `
         <div class='AddTaskButton'>
             <span class="material-symbols-outlined nav-addTask">
                 add_circle
             </span>
         </div>
+        <style>
+            .AddTaskButton {
+                position: fixed;
+                bottom: 80px;
+                right: 30px;
+                font-size: 3rem;
+                scale: 3;
+                z-index: 10;
+            }
+        </style>
         `
     }
 
@@ -217,7 +306,7 @@ class UI {
                     }
                 });
             });
-        },100)
+        },0)
         const date = new Date()
         const today = formatISO(date, { representation: 'date' })
         const tomorrow = formatISO(add(date, {days:1}), { representation: 'date'})
@@ -293,6 +382,33 @@ class UI {
             </div>
         </div>
         ${this.AddTaskButton()}
+        <style>
+            .task-list-today,
+            .task-list-tomorrow,
+            .task-list-upcoming,
+            .task-list-someday {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap:1px;
+            }
+
+            .task-category {
+                padding:10px;
+                font-weight: bold;
+                font-size: 24px;
+                display: flex;
+                justify-content: space-between;
+                color: var(--darkreader-selection-background2);
+            }
+            .drop-container:has(.dragover) {
+                /* border: 2px dashed white; */
+                transition:0.3s;
+                /* filter:brightness(3); */
+                filter:brightness(2);
+                color:var(--darkreader-selection-background2)
+            }
+        </style>
         `
     }
 
@@ -321,20 +437,48 @@ class UI {
                 UI.render()
             })
 
-        },100)
+        },0)
         return `
-            <div class='AddTask'>
-                <div class="AddTaskInput">
-                    <span class="material-symbols-outlined">
-                        close
-                    </span>
-                    <input type="text" autocomplete="on" autofocus placeholder="I want to...">
-                    </input>
-                    <span class="material-symbols-outlined">
-                        add_task
-                    </span>
-                </div>
+        <div class='AddTask'>
+            <div class="AddTaskInput">
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+                <input type="text" autocomplete="on" autofocus placeholder="I want to...">
+                </input>
+                <span class="material-symbols-outlined">
+                    add_task
+                </span>
             </div>
+        </div>
+        <style>
+            .AddTask {
+                background-color: var(--darkreader-neutral-background);
+            }
+            
+            .AddTaskInput {
+                display: flex;
+                align-items: center;
+                font-size: 1.2rem;
+                margin: 10px;
+                background-color: var(--darkreader-neutral-background);
+                gap:10px;
+            }
+            
+            .AddTaskInput > input {
+                background-color: var(--darkreader-neutral-background);
+                color: var(--darkreader-neutral-text);
+                flex: 1;
+                font-size: 1.2rem;
+                border: none;
+                outline: none;
+            }
+            
+            .AddTaskInput > span:last-child {
+                color: var(--darkreader-selection-background2);
+                font-weight: bolder;
+            }
+        </style>
         `
     }
 
@@ -348,7 +492,7 @@ class UI {
                     input.focus()
                 })
             })
-        },100)
+        },0)
         const childNodes = Object.entries(TaskSuggestions.inputCheck(arg))
         return `
         <div class="AutoSuggestions">
@@ -356,6 +500,16 @@ class UI {
                 return this.AutoSuggestionItem({ key, value })
             }).join('')}
         </div>
+        <style>
+            .AutoSuggestions {
+                display: grid;
+                padding: 10px;
+                gap:20px;
+                background-color: var(--darkreader-neutral-background);
+                min-height: 100vh;
+                align-content: flex-start;
+            }
+        </style>
         `
     }
 
@@ -365,6 +519,17 @@ class UI {
             ${value}
             <span>${key}</span>
         </div>
+        <style>
+            .AutoSuggestionItem {
+                display: flex;
+                gap: 10px;
+            }
+
+            .AutoSuggestionItem > span:first-child {
+                color: var(--darkreader-selection-background2);
+                font-weight: bolder;
+            }
+        </style>
         `
     }
     static TaskCard = ({ title, UUID , status}) => {
@@ -409,7 +574,7 @@ class UI {
                 event.target.classList.remove("dragging");
             });
             
-        },100)
+        },0)
         const node = document.createElement('div')
         const done = status === 'end' ? 'done-task' : null
         const checked = !done ? null : 'checked'
@@ -418,6 +583,27 @@ class UI {
             <input type='checkbox' class='task-checkmark' ${checked} data-UUID='${UUID}'></input>
             <div class='card-title ${done}' data-UUID='${UUID}'>${title}</div>
         </div>
+        <style>
+            .TaskCard {
+                padding: 10px;
+                z-index: 2;
+                background-color: var(--darkreader-neutral-background);
+                display: flex;
+                gap:10px;
+                font-size: 18px;
+                box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+            }
+            
+            .done-task {
+                text-decoration:line-through;
+                color: var(--darkreader-done-task);
+            }
+
+            .dragging {
+                opacity: 0.5;
+            }
+
+        </style>
         `
     }
 }
