@@ -45,3 +45,19 @@ body {
 
 .drop-container {
 }
+
+.EditTask {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap:10px;
+}
+
+.EditTaskHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.EditTaskHeader > span:nth-child(2) {
+    color: var(--darkreader-selection-background)
+}

@@ -8,7 +8,7 @@ class UI {
     static activeCategory = 'All Task'
     static render = () => {
         const content = document.querySelector('#content')
-        switch (true){
+        switch (UI.nav){
             default:
                 content.innerHTML = `
                     ${this.Header()}
@@ -63,7 +63,7 @@ class UI {
                 <span>TASK DETAILS</span>
                 <span>Save</span>
             </div>
-            <div>
+            <div class="title">
                 TITLE
                 ${title}
             </div>
@@ -90,6 +90,9 @@ class UI {
                 ${status}
             </div>
         </div>
+        <style>
+            
+        </style>
         `
     }
     
@@ -218,7 +221,7 @@ class UI {
                     ${this.AutoSuggestions()}
                 `
             })
-        },0)
+        })
         return `
         <div class='AddTaskButton'>
             <span class="material-symbols-outlined nav-addTask">
@@ -300,16 +303,38 @@ class UI {
                     // prevent default action (open as link for some elements)
                     event.preventDefault();
                     // move dragged element to the selected drop target
-                    if (event.target.closest(".drop-container").classList.contains("drop-container")) {
-                        event.target.classList.remove("dragover");
-                        event.target.closest(`.drop-container`).appendChild(this.dragged)
-                    }
+                    // if (event.target.closest(".drop-container")) {
+                    //     event.target.classList.remove("dragover");
+                    //     event.target.closest(`.drop-container`).appendChild(this.dragged)
+                    // }
+                    console.log(event.target.closest(".drop-container").dataset)
+                    State.updateToDo(State.readToDo()
+                        .filter(item => {
+                            return item.UUID === this.dragged.dataset.uuid
+                            if (item.UUID === this.dragged.dataset.uuid){
+                                const target = event.target.closest(".drop-container")
+                                item.dueDate = target.dataset.duedate
+                                item.status = target.dataset.status
+                            }
+                        })
+                        .map(item => {
+                            const target = event.target.closest(".drop-container")
+                            item.dueDate = target.dataset.duedate === "null"
+                                ? null
+                                : target.dataset.duedate
+                            item.status = target.dataset.status
+                            return item
+                        })
+                    )
+                    this.render()
                 });
             });
         },0)
         const date = new Date()
         const today = formatISO(date, { representation: 'date' })
         const tomorrow = formatISO(add(date, {days:1}), { representation: 'date'})
+        const upcoming = formatISO(add(date, {days:7}), { representation: 'date'})
+        const someday = null
 
         const todayToDoList = State.readToDo().filter(element=>{
             return (element.dueDate === today && element.status !== 'end')
@@ -328,7 +353,7 @@ class UI {
         })
         return `
         <div class='Task'>
-            <div class='task-list-today drop-container'>
+            <div class='task-list-today drop-container' data-dueDate="${today}" data-status="queue">
                 <div class='task-category'>
                     <div class='today'>Today</div>
                     <span class="material-symbols-outlined add-task" data-key='today'>
@@ -339,7 +364,7 @@ class UI {
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-list-tomorrow drop-container'>
+            <div class='task-list-tomorrow drop-container' data-dueDate="${tomorrow}" data-status="queue">
                 <div class='task-category'>
                     <div class='tomorrow'>Tomorrow</div>
                     <span class="material-symbols-outlined add-task" data-key='tomorrow'>
@@ -350,7 +375,7 @@ class UI {
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-list-upcoming drop-container'>
+            <div class='task-list-upcoming drop-container' data-dueDate="${upcoming}" data-status="queue">
                 <div class='task-category'>
                     <div class='upcoming'>Upcoming</div>
                     <span class="material-symbols-outlined add-task" data-key='upcoming'>
@@ -361,7 +386,7 @@ class UI {
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-list-someday drop-container'>
+            <div class='task-list-someday drop-container' data-dueDate="${someday}" data-status="queue">
                 <div class='task-category'>
                     <div class='someday'>Someday</div>
                     <span class="material-symbols-outlined add-task" data-key='someday'>
@@ -372,7 +397,7 @@ class UI {
                     return this.TaskCard({title:element.title, UUID:element.UUID})
                 }).join('')}
             </div>
-            <div class='task-list-archives drop-container'>
+            <div class='task-list-archives drop-container' data-status="end">
                 <div class='task-category'>
                 <div class='archives'>Archives</div>
                 </div>
@@ -492,7 +517,7 @@ class UI {
                     input.focus()
                 })
             })
-        },0)
+        })
         const childNodes = Object.entries(TaskSuggestions.inputCheck(arg))
         return `
         <div class="AutoSuggestions">
