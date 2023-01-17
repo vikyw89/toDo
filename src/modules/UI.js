@@ -490,7 +490,7 @@ class UI {
                 UI.render()
             })
 
-        },0)
+        })
         return `
         <div class='AddTask'>
             <div class="AddTaskInput">
@@ -633,10 +633,18 @@ class UI {
         const node = document.createElement('div')
         const done = status === 'end' ? 'done-task' : null
         const checked = !done ? null : 'checked'
+        const deleteButton = checked
+            ? `
+            <span class="material-symbols-outlined delete" data-UUID='${UUID}'>
+                delete
+            </span>
+            `
+            : ''
         return `
         <div class='TaskCard' data-UUID='${UUID}'  draggable="true">
             <input type='checkbox' class='task-checkmark' ${checked} data-UUID='${UUID}'></input>
             <div class='card-title ${done}' data-UUID='${UUID}'>${title}</div>
+            ${deleteButton}
         </div>
         <style>
             .TaskCard {
@@ -658,6 +666,9 @@ class UI {
                 opacity: 0.5;
             }
 
+            .TaskCard > .card-title {
+                flex:1;
+            }
         </style>
         `
     }
