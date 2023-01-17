@@ -5,7 +5,7 @@ import { State } from "./state"
 class UI {
     static nav = 'task'
     static dragged
-    static activeCategory = 'All Task'
+    static activeCategory = null
     static render = () => {
         const content = document.querySelector('#content')
         switch (UI.nav){
@@ -146,7 +146,7 @@ class UI {
             <span class="material-symbols-outlined nav-categories">
                 apps
             </span>
-            <div class='activeCategory'>${UI.activeCategory}</div>
+            <div class='activeCategory'>${UI.activeCategory ? this.activeCategory.name : 'All Task'}</div>
             <span class="material-symbols-outlined nav-notif">
                 circle_notifications
             </span>
@@ -365,19 +365,27 @@ class UI {
         const upcoming = formatISO(add(date, {days:7}), { representation: 'date'})
         const someday = null
 
-        const todayToDoList = State.readToDo().filter(element=>{
+        const filteredTask = State.readToDo().filter(element=>{
+            if (this.activeCategory) {
+                return this.activeCategory.UUID === element.UUID
+            } else {
+                return element
+            }
+        })  
+
+        const todayToDoList = filteredTask.filter(element=>{
             return (element.dueDate === today && element.status !== 'end')
         })
-        const tomorrowToDoList = State.readToDo().filter(element=>{
+        const tomorrowToDoList = filteredTask.filter(element=>{
             return (element.dueDate === tomorrow && element.status !== 'end')
         })
-        const upcomingToDoList = State.readToDo().filter(element=>{
+        const upcomingToDoList = filteredTask.filter(element=>{
             return (element.dueDate !== today && element.dueDate !== tomorrow && element.dueDate && element.status !== 'end')
         })
-        const somedayToDoList = State.readToDo().filter(element=> {
+        const somedayToDoList = filteredTask.filter(element=> {
             return (element.dueDate === null && element.status !== 'end')
         })
-        const archives = State.readToDo().filter(element=>{
+        const archives = filteredTask.filter(element=>{
             return element.status === 'end'
         })
         return `
@@ -585,13 +593,15 @@ class UI {
         </style>
         `
     }
+
     static TaskCard = ({ title, UUID , status}) => {
         setTimeout(()=>{
             // cache DOM
             const taskTitle = document.querySelector(`.card-title[data-uuid='${UUID}']`)
             const checkBox = document.querySelector(`input[data-uuid='${UUID}']`)
             const deleteButton = document.querySelector(`.TaskCard > .delete[data-uuid='${UUID}']`)
-
+            const dragTarget = document.querySelector(`.TaskCard[data-uuid="${UUID}"]`)
+            
             // Edit Task
             taskTitle.addEventListener('click', ()=>{
                 const toDo = State.readToDo().filter(item=>{
@@ -623,27 +633,25 @@ class UI {
                     UI.render()
                 })
             }
-   
 
             /* events fired on the draggable target */
-            const source = document.querySelector(`.TaskCard[data-uuid="${UUID}"]`)
-            source.addEventListener("drag", (event) => {
+            
+            dragTarget.addEventListener("drag", (event) => {
             });
             
-            source.addEventListener("dragstart", (event) => {
+            dragTarget.addEventListener("dragstart", (event) => {
                 // store a ref. on the dragged elem
                 this.dragged = event.target
                 // make it half transparent
                 event.target.classList.add("dragging");
             });
             
-            source.addEventListener("dragend", (event) => {
+            dragTarget.addEventListener("dragend", (event) => {
                 // reset the transparency
                 event.target.classList.remove("dragging");
             });
-            
         },0)
-        const node = document.createElement('div')
+
         const done = status === 'end' ? 'done-task' : null
         const checked = !done ? null : 'checked'
         const deleteButton = checked
