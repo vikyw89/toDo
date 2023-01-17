@@ -16,10 +16,10 @@ class UI {
                     ${this.Footer()}
                 `
                 break
-            case UI.nav === 'categories':
+            case 'categories':
                 content.innerHTML = `
-                    ${this.SearchTask()}
                     ${this.Categories()}
+                    ${this.Footer()}
                 `
                 break
         }
@@ -38,24 +38,77 @@ class UI {
             }
         </style>
         `
-        document.querySelector(`.nav-${UI.nav}`).classList.add('active')
+        const navIcon = document.querySelector(`.nav-${UI.nav}`)
+        if (navIcon) {
+            navIcon.classList.add('active')
+        }
     }
 
     static Categories = () => {
         return `
+        <div class="Categories">
+            ${this.SearchTask()}
+            ${this.CategoryContainer()}
+        </div>
+        <style>
+        </style>
         `
     }
+
     static SearchTask = () => {
         return `
         <div class="SearchTask pizza">
-            <span class="material-symbols-outlined">
-                search
-            </span>
-            <input placeholder="Search for tasks, events, etc..."></input>
+            <div class="SearchTaskInput">
+                <span class="material-symbols-outlined">
+                    search
+                </span>
+                <input type="text" autocomplete="on" autofocus placeholder="Search for tasks, events, etc...">
+                </input>
+            </div>
+        </div>
+        <style>
+            .SearchTask {
+                background-color: var(--darkreader-neutral-background);
+            }
+            
+            .SearchTaskInput {
+                display: flex;
+                align-items: center;
+                font-size: 1.2rem;
+                margin: 10px;
+                background-color: var(--darkreader-neutral-background);
+                gap:10px;
+            }
+            
+            .SearchTaskInput > input {
+                background-color: var(--darkreader-neutral-background);
+                color: var(--darkreader-neutral-text);
+                flex: 1;
+                font-size: 1.2rem;
+                border: none;
+                outline: none;
+            }
+        </style>
+        `
+    }
+    static CategoryContainer = () => {
+        console.log(State.readCategories())
+        return `
+        <div class="CategoryContainer">
+            ${State.readCategories().map(element => {
+                return this.CategoryCard({ element })
+            }).join('')}
         </div>
         `
     }
 
+    static CategoryCard = ({ element }) => {
+        return `
+        <div class="CategoryCard" data-uuid="${element.UUID}">
+            ${element.name}
+        </div>
+        `
+    }
     static EditTask = ({ UUID, categoriesUUID, title, dueDate, priority , status }) => {
         setTimeout(()=>{
             // cache DOM
@@ -120,7 +173,58 @@ class UI {
             <button class="delete">Delete Task</button>
         </div>
         <style>
-            
+        .EditTask {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap:20px;
+        }
+        
+        .EditTask > .header {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .EditTask > .header > .save {
+            color: var(--darkreader-selection-background)
+        }
+        
+        .EditTask > .title {
+            font-size: 2rem;
+            background-color: var(--darkreader-neutral-background3);
+        }
+        
+        .EditTask > .delete {
+            background-color: initial;
+          background-image: linear-gradient(-180deg, #FF7E31, #E62C03);
+          border-radius: 6px;
+          box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+          color: #FFFFFF;
+          cursor: pointer;
+          display: inline-block;
+          font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+          height: 40px;
+          line-height: 40px;
+          outline: 0;
+          overflow: hidden;
+          padding: 0 20px;
+          pointer-events: auto;
+          position: relative;
+          text-align: center;
+          touch-action: manipulation;
+          user-select: none;
+          -webkit-user-select: none;
+          vertical-align: top;
+          white-space: nowrap;
+          width: 100%;
+          z-index: 9;
+          border: 0;
+          transition: box-shadow .2s;
+        }
+        
+        .EditTask > .delete:hover {
+            box-shadow: rgba(253, 76, 0, 0.5) 0 3px 8px;
+        }
         </style>
         `
     }
