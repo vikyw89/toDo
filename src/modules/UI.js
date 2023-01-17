@@ -120,6 +120,7 @@ class UI {
             const statusElement = document.querySelector('.EditTask > .status')
             const deleteButton = document.querySelector('.EditTask > .delete')
 
+            // Save button
             saveButton.addEventListener('click',()=>{
                 // get all data and update the database
                 const updatedDueDate = dueDateElement.value
@@ -134,6 +135,7 @@ class UI {
                 this.render()
             })
 
+            // Delete button
             deleteButton.addEventListener('click', ()=>{
                 // delete data in model
                 State.deleteToDo({ UUID: UUID})
