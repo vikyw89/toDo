@@ -587,6 +587,7 @@ class UI {
     }
     static TaskCard = ({ title, UUID , status}) => {
         setTimeout(()=>{
+            // Edit Task
             document.querySelector(`.card-title[data-uuid='${UUID}']`).addEventListener('click', ()=>{
                 const toDo = State.readToDo().filter(item=>{
                     return item.UUID === UUID
@@ -597,6 +598,7 @@ class UI {
                 document.querySelector(`.nav-${UI.nav}`).classList.remove('active')
             })
             
+            //Check, uncheck task
             document.querySelector(`input[data-uuid='${UUID}']`).addEventListener('click', ()=>{
                 const node = document.querySelector(`div[data-uuid='${UUID}']`)
                 const toDo = State.readToDo().filter(item=>{
