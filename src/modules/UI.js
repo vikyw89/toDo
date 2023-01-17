@@ -587,8 +587,13 @@ class UI {
     }
     static TaskCard = ({ title, UUID , status}) => {
         setTimeout(()=>{
+            // cache DOM
+            const taskTitle = document.querySelector(`.card-title[data-uuid='${UUID}']`)
+            const checkBox = document.querySelector(`input[data-uuid='${UUID}']`)
+            const deleteButton = document.querySelector(`.TaskCard > .delete[data-uuid='${UUID}']`)
+
             // Edit Task
-            document.querySelector(`.card-title[data-uuid='${UUID}']`).addEventListener('click', ()=>{
+            taskTitle.addEventListener('click', ()=>{
                 const toDo = State.readToDo().filter(item=>{
                     return item.UUID === UUID
                 })
@@ -599,8 +604,7 @@ class UI {
             })
             
             //Check, uncheck task
-            document.querySelector(`input[data-uuid='${UUID}']`).addEventListener('click', ()=>{
-                const node = document.querySelector(`div[data-uuid='${UUID}']`)
+            checkBox.addEventListener('click', ()=>{
                 const toDo = State.readToDo().filter(item=>{
                     return item.UUID === UUID
                 })
@@ -611,6 +615,15 @@ class UI {
                 }
                 UI.render()
             })
+
+            // Delete button
+            if (deleteButton) {
+                deleteButton.addEventListener('click',()=>{
+                    State.deleteToDo({ UUID: UUID})
+                    UI.render()
+                })
+            }
+   
 
             /* events fired on the draggable target */
             const source = document.querySelector(`.TaskCard[data-uuid="${UUID}"]`)
