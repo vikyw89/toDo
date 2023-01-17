@@ -56,39 +56,68 @@ class UI {
         `
     }
 
-    static EditTask = ({ UUID, categoriesUUID, title, description, dueDate, priority , status }) => {
+    static EditTask = ({ UUID, categoriesUUID, title, dueDate, priority , status }) => {
+        setTimeout(()=>{
+            // cache DOM
+            const titleElement = document.querySelector('.EditTask > .title')
+            const dueDateElement = document.querySelector('.EditTask > .dueDate')
+            const categoryElement = document.querySelector('.EditTask > .category')
+            const saveButton = document.querySelector('.EditTask > .header > .save')
+            const priorityElement = document.querySelector('.EditTask > .priority')
+            const statusElement = document.querySelector('.EditTask > .status')
+            const deleteButton = document.querySelector('.EditTask > .delete')
+
+            saveButton.addEventListener('click',()=>{
+                // get all data and update the database
+                const updatedDueDate = dueDateElement.value
+                const updatedTitle = titleElement.innerText
+                const updatedPriority = priorityElement.value
+                const updatedStatus = statusElement.value
+                const updatedCategory = State.readCategories().filter(item=>{
+                    return item.UUID === categoryElement.dataset.uuid
+                })[0]
+
+                State.updateToDo({ UUID, categoriesUUID:updatedCategory, title:updatedTitle, dueDate:updatedDueDate, priority:updatedPriority , status:updatedStatus})
+                this.render()
+            })
+
+            deleteButton.addEventListener('click', ()=>{
+                // delete data in model
+                State.deleteToDo({ UUID: UUID})
+                this.render()
+            })
+
+        })
         return `
         <div class="EditTask">
-            <div class="EditTaskHeader">
+            <div class="header">
                 <span>TASK DETAILS</span>
-                <span>Save</span>
+                <span class="save">Save</span>
             </div>
-            <div class="title">
-                TITLE
+            <div class="title" contenteditable>
                 ${title}
             </div>
-            <div>
-                DESCRIPTION
-                ${description}
-            </div>
-            <div>
-                DUE DATE
-                ${dueDate}
-            </div>
-            <div>
-                CATEGORY
-                ${State.readCategories().filter(item=>{
-                    return item.UUID === categoriesUUID
-                })[0].name}
-            </div>
-            <div>
-                PRIORITY
-                ${priority}
-            </div>
-            <div>
-                STATUS
-                ${status}
-            </div>
+            <label for="date">Due Date</label>
+            <input name="date" type="date" class="dueDate" placeholder="yyyymmdd" value="${dueDate}"/>
+            <label for="priority">Priority</label>
+            <select name="priority" class="priority">
+                <option value="high" ${priority === 'high' && 'selected'}>High</option>
+                <option value="medium" ${priority === 'medium' && 'selected'}>Medium</option>
+                <option value="low" ${priority === 'high' && 'selected'}>Low</option>
+            </select>
+            <label for="category">Category</label>
+            <select name="category" class="category">
+                ${State.readCategories().map(item=>{
+                    return `<option value="${item.name}" data-UUID="${item.uuid}">${item.name}x</option>`
+                }).join('')}
+            </select>
+            <label for="status">Status</label>
+            <select name="status" class="status">
+                <option value="queue" ${status === 'queue' && 'selected'}>Queue</option>
+                <option value="progress" ${status === 'progress' && 'selected'}>Progress</option>
+                <option value="end" ${status === 'end' && 'selected'}>Done</option>
+            </select>
+            <button class="delete">Delete Task</button>
         </div>
         <style>
             
@@ -166,7 +195,7 @@ class UI {
                 UI.nav = 'settings'
                 UI.render()
             })
-        },0)
+        })
         return `
         <div class='Footer'>
             <span class="material-symbols-outlined nav-task">
@@ -457,7 +486,6 @@ class UI {
             document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
                 const input = document.querySelector('.AddTaskInput > input')
                 State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:input.value ,dueDate })
-                console.log(State.readToDo())
                 UI.nav = 'task'
                 UI.render()
             })

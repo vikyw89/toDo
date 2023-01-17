@@ -23,8 +23,8 @@ class State {
         LocalStorage.setStorage('Categories', Categories.list)
     }
 
-    static createToDo = ({ categoriesUUID, title, description, dueDate, priority }) => {
-        ToDo.create({ categoriesUUID, title, description, dueDate, priority })
+    static createToDo = ({ categoriesUUID, title, dueDate, priority }) => {
+        ToDo.create({ categoriesUUID, title, dueDate, priority })
         LocalStorage.setStorage('ToDo', ToDo.list)
     }
 
@@ -33,8 +33,8 @@ class State {
         return ToDo.list
     }
 
-    static updateToDo = ({ UUID, categoriesUUID, title, description, dueDate, priority , status}) => {
-        ToDo.update({ UUID, categoriesUUID, title, description, dueDate, priority , status})
+    static updateToDo = ({ UUID, categoriesUUID, title, dueDate, priority , status}) => {
+        ToDo.update({ UUID, categoriesUUID, title, dueDate, priority , status})
         LocalStorage.setStorage('ToDo', ToDo.list)
     }
 

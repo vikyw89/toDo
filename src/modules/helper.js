@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 class ToDo {
     static list = []
 
-    static create = ({ categoriesUUID, title, description, dueDate, priority }) => {
-        const newToDo = new ToDo({ categoriesUUID, title, description, dueDate, priority })
+    static create = ({ categoriesUUID, title, dueDate, priority }) => {
+        const newToDo = new ToDo({ categoriesUUID, title, dueDate, priority })
         ToDo.list = [...ToDo.list ?? [], newToDo]
     }
 
@@ -13,12 +13,11 @@ class ToDo {
         return ToDo.list
     }
 
-    static update = ({ UUID, categoriesUUID, title, description, dueDate, priority , status}) => {
+    static update = ({ UUID, categoriesUUID, title, dueDate, priority, status}) => {
         const updatedToDo = ToDo.list.reduce((result, item)=>{
             if (item.UUID === UUID) {
                 item.title = title ?? item.title
                 item.categoriesUUID = categoriesUUID ?? item.categoriesUUID
-                item.description = description ?? item.description
                 item.dueDate = dueDate ?? item.dueDate
                 item.priority = priority ?? item.priority
                 item.status = status ?? item.status
@@ -35,12 +34,11 @@ class ToDo {
         ToDo.list = updatedToDo
     }
 
-    constructor({ categoriesUUID, title, description, dueDate, priority }){
+    constructor({ categoriesUUID, title, dueDate, priority }){
         this.categoriesUUID = categoriesUUID
         this.UUID = uuidv4()
         this.title = title
-        this.description = description ?? ''
-        this.priority = priority ?? 'Normal'
+        this.priority = priority ?? 'medium'
         this.createdDate = formatISO(new Date(), { representation: 'date' })
         this.dueDate = dueDate
         this.status = 'queue'
