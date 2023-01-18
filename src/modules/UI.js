@@ -23,6 +23,11 @@ class UI {
                     ${this.Footer()}
                 `
                 break
+            case "searchTask":
+                content.innerHTML = `
+                    ${this.SearchTaskPage}
+                `
+                break
         }
         content.innerHTML += `
         <style>
@@ -45,6 +50,15 @@ class UI {
         }
     }
 
+
+    static SearchTaskPage = () => {
+        return `
+        <div class="SearchTaskPage">
+            This Page is Under Development
+        </div>
+        `
+    }
+
     static Categories = () => {
         return `
         <div class="Categories">
@@ -57,6 +71,16 @@ class UI {
     }
 
     static SearchTask = () => {
+        setTimeout(()=>{
+            // Cache DOM
+            const searchBar = document.querySelector(`.SearchTask`)
+
+            // Search bar click
+            searchBar.addEventListener('click',()=>{
+                this.nav = "searchTask"
+                this.render()
+            })
+        })
         return `
         <div class="SearchTask pizza">
             <div class="SearchTaskInput">
