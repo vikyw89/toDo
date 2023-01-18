@@ -723,7 +723,7 @@ class UI {
                     </span>
                 </div>
                 ${todayToDoList.map(element=>{
-                    return this.TaskCard({title:element.title, UUID:element.UUID})
+                    return this.TaskCard(element)
                 }).join('')}
             </div>
             <div class='task-list-tomorrow drop-container' data-dueDate="${tomorrow}" data-status="queue">
@@ -734,7 +734,7 @@ class UI {
                     </span>
                 </div>
                 ${tomorrowToDoList.map(element=>{
-                    return this.TaskCard({title:element.title, UUID:element.UUID})
+                    return this.TaskCard(element)
                 }).join('')}
             </div>
             <div class='task-list-upcoming drop-container' data-dueDate="${upcoming}" data-status="queue">
@@ -745,7 +745,7 @@ class UI {
                     </span>
                 </div>
                 ${upcomingToDoList.map(element=>{
-                    return this.TaskCard({title:element.title, UUID:element.UUID})
+                    return this.TaskCard(element)
                 }).join('')}
             </div>
             <div class='task-list-someday drop-container' data-dueDate="${someday}" data-status="queue">
@@ -756,7 +756,7 @@ class UI {
                     </span>
                 </div>
                 ${somedayToDoList.map(element=>{
-                    return this.TaskCard({title:element.title, UUID:element.UUID})
+                    return this.TaskCard(element)
                 }).join('')}
             </div>
             <div class='task-list-archives drop-container' data-status="end">
@@ -764,7 +764,7 @@ class UI {
                 <div class='archives'>Archives</div>
                 </div>
                 ${archives.map(element=>{
-                    return this.TaskCard({title:element.title, UUID:element.UUID, status:element.status})
+                    return this.TaskCard(element)
                 }).join('')}
             </div>
         </div>
@@ -922,7 +922,8 @@ class UI {
         `
     }
 
-    static TaskCard = ({ title, UUID , status}) => {
+    static TaskCard = (element) => {
+        const {title, UUID, status, priority } = element
         setTimeout(()=>{
             // cache DOM
             const taskTitle = document.querySelector(`.card-title[data-uuid='${UUID}']`)
@@ -932,11 +933,8 @@ class UI {
             
             // Edit Task
             taskTitle.addEventListener('click', ()=>{
-                const toDo = State.readToDo().filter(item=>{
-                    return item.UUID === UUID
-                })
                 document.querySelector('.Main').innerHTML =`
-                    ${this.EditTask(toDo[0])}
+                    ${this.EditTask(element)}
                 `
                 document.querySelector(`.nav-${UI.nav}`).classList.remove('active')
             })
@@ -989,10 +987,16 @@ class UI {
             </span>
             `
             : ''
+        const taskPriority = {
+            low:'lowPriority',
+            medium:'mediumPriority',
+            high:'highPriority'
+        }
         return `
         <div class='TaskCard' data-UUID='${UUID}'  draggable="true">
             <input type='checkbox' class='task-checkmark' ${checked} data-UUID='${UUID}'></input>
             <div class='card-title ${done}' data-UUID='${UUID}'>${title}</div>
+            <div class="${taskPriority[priority]}"></div>
             ${deleteButton}
         </div>
         <style>
@@ -1018,6 +1022,26 @@ class UI {
 
             .TaskCard > .card-title {
                 flex:1;
+            }
+            
+            .highPriority,
+            .mediumPriority,
+            .lowPriority {
+                width: 10px;
+                border-radius: 20px;
+                margin-right: 5px;
+            }
+
+            .highPriority {
+                background-color: red;
+            }
+
+            .mediumPriority {
+                background-color: yellow;
+            }
+
+            .lowPriority {
+                background-color: green;
             }
         </style>
         `
