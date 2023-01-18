@@ -13,22 +13,18 @@ polyfill({
     dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
 });
 // sync model to DB
-State.readCategories()
-State.readToDo()
-LocalStorage.setStorage('ToDo')
-LocalStorage.setStorage('Categories')
+// LocalStorage.setStorage('ToDo')
+// LocalStorage.setStorage('Categories')
 // populate model if empty
 if (!State.readCategories()) {
     State.createCategories({ name:'personal' })
     State.createCategories({ name:'work' })
-    State.createCategories({ name:'this is a category with a long name' })
 }
 if (!State.readToDo()) {
-    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'Trials', dueDate:formatISO(new Date(), { representation: 'date' }) })
-    State.createToDo({ categoriesUUID:State.readCategories()[1].UUID, title:'Trials2', dueDate:formatISO(new Date(), { representation: 'date' }) })
-    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'Trials3', dueDate:formatISO(new Date(), { representation: 'date' }) })
-    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'Trials4', dueDate:formatISO(new Date(), { representation: 'date' }) })
-    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'Trials5', dueDate:formatISO(new Date(), { representation: 'date' }) })
+    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'drag and drop task', dueDate:formatISO(new Date(), { representation: 'date' }) })
+    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'press check if you\'re finished with me', dueDate:formatISO(new Date(), { representation: 'date' }) })
+    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'you can edit me by clicking', dueDate:formatISO(new Date(), { representation: 'date' }) })
+    State.createToDo({ categoriesUUID:State.readCategories()[0].UUID, title:'have fun', dueDate:formatISO(new Date(), { representation: 'date' }) })
 }
 
 // init
