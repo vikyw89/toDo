@@ -26,6 +26,7 @@ class UI {
             case "searchTask":
                 content.innerHTML = `
                     ${this.SearchTaskPage}
+                    ${this.Footer()}
                 `
                 break
         }
@@ -70,6 +71,136 @@ class UI {
         `
     }
 
+    static AddCategory = () => {
+        setTimeout(()=>{
+            // Cache DOM
+            const inputBar = document.querySelector('.AddCategory > .AddCategoryInput > input')
+            const closeButton = document.querySelector('.AddCategory > .AddCategoryInput > span:nth-child(1)')
+            const addButton = document.querySelector('.AddCategory > .AddCategoryInput > span:nth-child(3)')
+            
+            // Set focus on input bar
+            inputBar.focus()
+
+            // X click
+            closeButton.addEventListener('click',()=>{
+                this.render()
+            })
+
+            // Add button click
+            addButton.addEventListener('click',()=>{
+                const newCategoryName = inputBar.value
+                State.createCategories({ name:newCategoryName })
+                this.render()
+            })
+        })
+        return `
+        <div class='AddCategory'>
+            <div class="AddCategoryInput">
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+                <input type="text" autocomplete="on" autofocus placeholder="Create a new category...">
+                </input>
+                <span class="material-symbols-outlined">
+                    send
+                </span>
+            </div>
+        </div>
+        <style>
+            .AddCategory {
+                background-color: var(--darkreader-neutral-background);
+            }
+            
+            .AddCategoryInput {
+                display: flex;
+                align-items: center;
+                font-size: 1.2rem;
+                margin: 10px;
+                background-color: var(--darkreader-neutral-background);
+                gap:10px;
+            }
+            
+            .AddCategoryInput > input {
+                background-color: var(--darkreader-neutral-background);
+                color: var(--darkreader-neutral-text);
+                flex: 1;
+                font-size: 1.2rem;
+                border: none;
+                outline: none;
+            }
+            
+            .AddCategoryInput > span:last-child {
+                color: var(--darkreader-selection-background2);
+                font-weight: bolder;
+            }
+        </style>
+        `
+    }
+    static NewCategory = () => {
+        setTimeout(()=>{
+            // cache DOM
+            const screen = document.querySelector('#content')
+            const background = document.querySelector('.Categories')
+            const popUp = document.createElement('div')
+            const newCategory = document.querySelector('.NewCategory')
+
+            // On new category click
+            newCategory.addEventListener('click', ()=>{
+                // blur background
+                background.classList.add('blur')
+                popUp.innerHTML = `
+                    <div class="popUp">
+                        ${this.AddCategory()}
+                    </div>
+                    <style>
+                    .popUp {
+                        z-index: 99;
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        height:200px;
+                        width:500px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 75%;
+                    }
+                    .popUp > input {
+                        text-align: center;
+                        background-color: var(--darkreader-neutral-background3);
+                    }
+                    </style>
+                    `
+                screen.appendChild(popUp)
+            })
+        })
+        return `
+        <div class="NewCategory">
+            <span>
+                +
+            </span>
+        </div>
+        <style>
+        .NewCategory {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            padding: 10px;
+            outline:1px solid white
+        }
+        
+        .CategoryCard > span {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        </style>
+        `
+    }
+
     static SearchTask = () => {
         setTimeout(()=>{
             // Cache DOM
@@ -77,6 +208,7 @@ class UI {
 
             // Search bar click
             searchBar.addEventListener('click',()=>{
+                console.log('searchTask click!')
                 this.nav = "searchTask"
                 this.render()
             })
@@ -133,6 +265,7 @@ class UI {
                 ${State.readCategories().map(element => {
                     return this.CategoryCard({ element })
                 }).join('')}
+                ${this.NewCategory()}
             </div>
         </div>
         <style>
@@ -401,7 +534,7 @@ class UI {
         <style>
             .Footer {
                 position: fixed;
-                bottom: 0;
+                bottom: 0px;
                 left: 0px;
                 width: 100%;
                 display: grid;
@@ -877,6 +1010,7 @@ class UI {
 
             .dragging {
                 opacity: 0.5;
+                display:none;
             }
 
             .TaskCard > .card-title {
