@@ -5,9 +5,10 @@ import { State } from "./state"
 class UI {
     static nav = 'task'
     static dragged
-    static activeCategory = null
+    static activeCategory = { name: "All Tasks", UUID:"All Tasks"}
     static render = () => {
         const content = document.querySelector('#content')
+        console.log(this.activeCategory)
         switch (UI.nav){
             default:
                 content.innerHTML = `
@@ -92,21 +93,80 @@ class UI {
         `
     }
     static CategoryContainer = () => {
-        console.log(State.readCategories())
+        setTimeout(()=>{
+
+
+        })
         return `
         <div class="CategoryContainer">
-            ${State.readCategories().map(element => {
-                return this.CategoryCard({ element })
-            }).join('')}
+            <div class="defaultCategoriesContainer">
+                ${this.CategoryCard({ element : { name: 'All Tasks', UUID:'All Tasks' }})}
+            </div>
+            <div class="title">
+                Categories
+            </div>
+            <div class="userCategoriesContainer">
+                ${State.readCategories().map(element => {
+                    return this.CategoryCard({ element })
+                }).join('')}
+            </div>
         </div>
+        <style>
+        .CategoryContainer {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .CategoryContainer > .title {
+            font-size: 2rem;
+        }
+        
+        .CategoryContainer > .userCategoriesContainer, .defaultCategoriesContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap:10px;
+        }
+        </style>
         `
     }
 
     static CategoryCard = ({ element }) => {
+        setTimeout(()=>{
+            // Cache DOM
+            const categoryCard = document.querySelector(`.CategoryCard[data-uuid="${element.UUID}"]`)
+
+            // Category Click
+            categoryCard.addEventListener('click', ()=>{
+                this.nav = "task"
+                this.activeCategory = element
+                this.render()
+            })
+        })
         return `
         <div class="CategoryCard" data-uuid="${element.UUID}">
-            ${element.name}
+            <span>
+                ${element.name}
+            </span>
         </div>
+        <style>
+        .CategoryCard {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            padding: 10px;
+            outline:1px solid white
+        }
+        
+        .CategoryCard > span {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        </style>
         `
     }
     static EditTask = ({ UUID, categoriesUUID, title, dueDate, priority , status }) => {
@@ -472,8 +532,10 @@ class UI {
         const someday = null
 
         const filteredTask = State.readToDo().filter(element=>{
-            if (this.activeCategory) {
-                return this.activeCategory.UUID === element.UUID
+            console.log(this.activeCategory)
+            console.log(element.UUID)
+            if (this.activeCategory.UUID !== "All Tasks") {
+                return this.activeCategory.UUID === element.categoriesUUID
             } else {
                 return element
             }
