@@ -63,7 +63,6 @@ class UI {
     static Categories = () => {
         return `
         <div class="Categories">
-            ${this.SearchTask()}
             ${this.CategoryContainer()}
         </div>
         <style>
@@ -412,38 +411,49 @@ class UI {
             font-size: 2rem;
             background-color: var(--darkreader-neutral-background3);
         }
-        
-        .EditTask > .delete {
-            background-color: initial;
-          background-image: linear-gradient(-180deg, #FF7E31, #E62C03);
-          border-radius: 6px;
-          box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-          color: #FFFFFF;
-          cursor: pointer;
-          display: inline-block;
-          font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
-          height: 40px;
-          line-height: 40px;
-          outline: 0;
-          overflow: hidden;
-          padding: 0 20px;
-          pointer-events: auto;
-          position: relative;
-          text-align: center;
-          touch-action: manipulation;
-          user-select: none;
-          -webkit-user-select: none;
-          vertical-align: top;
-          white-space: nowrap;
-          width: 100%;
-          z-index: 9;
-          border: 0;
-          transition: box-shadow .2s;
+
+        .delete {
+            background-color: #e1ecf4;
+            border-radius: 3px;
+            border: 1px solid red;
+            box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+            box-sizing: border-box;
+            color: #39739d;
+            cursor: pointer;
+            display: inline-block;
+            font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.15385;
+            margin: 0;
+            outline: none;
+            padding: 8px .8em;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: baseline;
+            white-space: nowrap;
+        }
+          
+        .delete:hover,
+        .delete:focus {
+        background-color: #b3d3ea;
+        color: #2c5777;
         }
         
-        .EditTask > .delete:hover {
-            box-shadow: rgba(253, 76, 0, 0.5) 0 3px 8px;
+        .delete:focus {
+        box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
         }
+        
+        .delete:active {
+        background-color: #a0c7e4;
+        box-shadow: none;
+        color: #2c5777;
+        }
+          
         </style>
         `
     }
@@ -458,8 +468,11 @@ class UI {
                 UI.nav = 'notif'
                 UI.render()
             })
-            document.querySelector('.nav-sort').addEventListener('click',()=>{
-                UI.nav = 'sort'
+            document.querySelector('.deleteCategory').addEventListener('click',()=>{
+                UI.nav = 'task'
+                // delete categories
+                State.deleteCategories({ UUID:this.activeCategory.UUID })
+                this.activeCategory = { name:'All Tasks', UUID: 'All Tasks' }
                 UI.render()
             })
         },0)
@@ -473,8 +486,8 @@ class UI {
             <span class="material-symbols-outlined nav-notif">
                 circle_notifications
             </span>
-            <span class="material-symbols-outlined nav-sort">
-                sort
+            <span class="material-symbols-outlined deleteCategory">
+                delete_sweep
             </span>
         </div>
         <style>
@@ -802,6 +815,7 @@ class UI {
     static AddTask = ({ dueDate }) => {
         setTimeout(()=>{
             const input = document.querySelector('.AddTaskInput > input')
+            input.focus()
             document.querySelector('.AddTaskInput > input').addEventListener('input', (e)=>{
                 document.querySelector('.AutoSuggestions').outerHTML = this.AutoSuggestions(e.target.value)
                 document.querySelectorAll('.TaskSuggestionItem').forEach(item=>{
@@ -812,10 +826,12 @@ class UI {
                     })
                 })
             })
+
             document.querySelector('.AddTaskInput > span:first-child').addEventListener('click', ()=>{
                 UI.nav = 'task'
                 UI.render()
             })
+
             document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
                 const input = document.querySelector('.AddTaskInput > input')
                 const newToDoCategoryUUID = this.activeCategory.UUID !== 'All Tasks'

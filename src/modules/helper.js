@@ -68,9 +68,6 @@ class Categories {
     }
 
     static delete = ({ UUID }) => {
-        if (Categories.list.length === 1) {
-            return
-        }
         const updatedCategories = Categories.list.filter(item=>{
             return item.UUID !== UUID
         })

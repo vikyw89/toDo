@@ -20,7 +20,12 @@ class State {
 
     static deleteCategories = ({ UUID }) => {
         Categories.delete({ UUID })
+        console.log(Categories.list)
         LocalStorage.setStorage('Categories', Categories.list)
+        ToDo.list = ToDo.list.filter(item=>{
+            return item.categoriesUUID != UUID
+        })
+        LocalStorage.setStorage('ToDo', ToDo.list)
     }
 
     static createToDo = ({ categoriesUUID, title, dueDate, priority }) => {
