@@ -342,9 +342,9 @@ class UI {
                 const updatedTitle = titleElement.innerText
                 const updatedPriority = priorityElement.value
                 const updatedStatus = statusElement.value
-                const updatedCategory = categoryElement.dataset.uuid
+                const updatedCategory = categoryElement.value
+                console.log(updatedCategory)
                 State.updateToDo({ UUID, categoriesUUID:updatedCategory, title:updatedTitle, dueDate:updatedDueDate, priority:updatedPriority , status:updatedStatus})
-                console.log(State.readToDo())
                 this.render()
             })
 
@@ -376,7 +376,7 @@ class UI {
             <label for="category">Category</label>
             <select name="category" class="category">
                 ${State.readCategories().map(item=>{
-                    return `<option value="${item.name}" data-UUID="${item.UUID}" ${categoriesUUID === item.UUID && 'selected'}>${item.name}x</option>`
+                    return `<option value="${item.UUID}" ${categoriesUUID === item.UUID && 'selected'}>${item.name}x</option>`
                 }).join('')}
             </select>
             <label for="status">Status</label>
@@ -681,7 +681,6 @@ class UI {
                                     break
                             }
                             item.status = target.dataset.status
-                            console.log(item)
                             return item
                         })
                     )
