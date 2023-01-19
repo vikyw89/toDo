@@ -8,7 +8,6 @@ class UI {
     static activeCategory = { name: "All Tasks", UUID:"All Tasks"}
     static render = () => {
         const content = document.querySelector('#content')
-        console.log(this.activeCategory)
         switch (UI.nav){
             default:
                 content.innerHTML = `
@@ -339,13 +338,13 @@ class UI {
             // Save button
             saveButton.addEventListener('click',()=>{
                 // get all data and update the database
-                const updatedDueDate = dueDateElement.value
+                const updatedDueDate = dueDateElement.value === '' ? null : dueDateElement.value
                 const updatedTitle = titleElement.innerText
                 const updatedPriority = priorityElement.value
                 const updatedStatus = statusElement.value
                 const updatedCategory = categoryElement.dataset.uuid
-
                 State.updateToDo({ UUID, categoriesUUID:updatedCategory, title:updatedTitle, dueDate:updatedDueDate, priority:updatedPriority , status:updatedStatus})
+                console.log(State.readToDo())
                 this.render()
             })
 
@@ -377,7 +376,6 @@ class UI {
             <label for="category">Category</label>
             <select name="category" class="category">
                 ${State.readCategories().map(item=>{
-                    console.log(item)
                     return `<option value="${item.name}" data-UUID="${item.UUID}" ${categoriesUUID === item.UUID && 'selected'}>${item.name}x</option>`
                 }).join('')}
             </select>
@@ -666,27 +664,24 @@ class UI {
                 target.addEventListener("drop", (event) => {
                     // prevent default action (open as link for some elements)
                     event.preventDefault();
-                    // move dragged element to the selected drop target
-                    // if (event.target.closest(".drop-container")) {
-                    //     event.target.classList.remove("dragover");
-                    //     event.target.closest(`.drop-container`).appendChild(this.dragged)
-                    // }
-                    console.log(event.target.closest(".drop-container").dataset)
                     State.updateToDo(State.readToDo()
                         .filter(item => {
                             return item.UUID === this.dragged.dataset.uuid
-                            if (item.UUID === this.dragged.dataset.uuid){
-                                const target = event.target.closest(".drop-container")
-                                item.dueDate = target.dataset.duedate
-                                item.status = target.dataset.status
-                            }
                         })
                         .map(item => {
                             const target = event.target.closest(".drop-container")
-                            item.dueDate = target.dataset.duedate === "null"
-                                ? null
-                                : target.dataset.duedate
+                            switch (target.dataset.duedate) {
+                                case 'null':
+                                    item.dueDate = null
+                                    break
+                                case undefined:
+                                    break
+                                default:
+                                    item.dueDate = target.dataset.duedate
+                                    break
+                            }
                             item.status = target.dataset.status
+                            console.log(item)
                             return item
                         })
                     )
@@ -701,14 +696,13 @@ class UI {
         const someday = null
 
         const filteredTask = State.readToDo().filter(element=>{
-            console.log(this.activeCategory)
-            console.log(element.UUID)
             if (this.activeCategory.UUID !== "All Tasks") {
                 return this.activeCategory.UUID === element.categoriesUUID
             } else {
                 return element
             }
         })  
+        console.log({filteredTask})
 
         const todayToDoList = filteredTask.filter(element=>{
             return (element.dueDate === today && element.status !== 'end')
