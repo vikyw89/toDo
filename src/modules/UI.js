@@ -834,9 +834,8 @@ class UI {
 
             document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
                 const input = document.querySelector('.AddTaskInput > input')
-                const newToDoCategoryUUID = this.activeCategory.UUID !== 'All Tasks'
-                    ? this.activeCategory.UUID
-                    : State.readCategories()[0].UUID
+                const newToDoCategoryUUID = this.activeCategory.UUID
+                console.log(this.activeCategory)
                 State.createToDo({ categoriesUUID:newToDoCategoryUUID, title:input.value ,dueDate })
                 UI.nav = 'task'
                 UI.render()
