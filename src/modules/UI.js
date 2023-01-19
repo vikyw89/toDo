@@ -343,9 +343,7 @@ class UI {
                 const updatedTitle = titleElement.innerText
                 const updatedPriority = priorityElement.value
                 const updatedStatus = statusElement.value
-                const updatedCategory = State.readCategories().filter(item=>{
-                    return item.UUID === categoryElement.dataset.uuid
-                })[0]
+                const updatedCategory = categoryElement.dataset.uuid
 
                 State.updateToDo({ UUID, categoriesUUID:updatedCategory, title:updatedTitle, dueDate:updatedDueDate, priority:updatedPriority , status:updatedStatus})
                 this.render()
@@ -379,7 +377,8 @@ class UI {
             <label for="category">Category</label>
             <select name="category" class="category">
                 ${State.readCategories().map(item=>{
-                    return `<option value="${item.name}" data-UUID="${item.uuid}">${item.name}x</option>`
+                    console.log(item)
+                    return `<option value="${item.name}" data-UUID="${item.UUID}" ${categoriesUUID === item.UUID && 'selected'}>${item.name}x</option>`
                 }).join('')}
             </select>
             <label for="status">Status</label>
@@ -835,7 +834,6 @@ class UI {
             document.querySelector('.AddTaskInput > span:last-child').addEventListener('click', ()=>{
                 const input = document.querySelector('.AddTaskInput > input')
                 const newToDoCategoryUUID = this.activeCategory.UUID
-                console.log(this.activeCategory)
                 State.createToDo({ categoriesUUID:newToDoCategoryUUID, title:input.value ,dueDate })
                 UI.nav = 'task'
                 UI.render()
